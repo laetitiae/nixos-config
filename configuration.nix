@@ -267,6 +267,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
    python3
+   pipenv
    wget
    ((vim_configurable.override {  }).customize{
       name = "vim";
