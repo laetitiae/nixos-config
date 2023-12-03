@@ -33,7 +33,7 @@
 #        }
 #      '';
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "spectre"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -128,7 +128,6 @@
       tdesktop
       comma
       gopass
-      syncthing
       spotify
       vscode
       ark
@@ -138,8 +137,11 @@
   };
 
   programs.zsh.enable = true;
+  programs.autofirma.fixJavaCerts = true;
 
-  home-manager.users.lae = { pkgs, ... }: {
+  home-manager.backupFileExtension = "bak";
+
+  home-manager.users.lae = { pkgs, config, ... }: {
     home.packages = with pkgs; [ 
       zsh
       yubico-piv-tool
@@ -225,6 +227,37 @@
       ];
     };
 
+    programs.autofirma.enable = true;
+    programs.autofirma.firefoxIntegration.profiles = {
+      lae = {  # El nombre del perfil de firefox donde se habilitará AutoFirma
+        enable = true;
+      };
+    };
+    programs.dnieremote.enable = true;
+
+    programs.configuradorfnmt.enable = true;
+    programs.configuradorfnmt.firefoxIntegration.profiles = {
+      lae = {  # El nombre del perfil de firefox donde se habilitará el Configurador FNMT
+        enable = true;
+      };
+    };
+
+    programs.firefox = {
+      enable = true;
+      package = pkgs.firefox.override (args: {
+        extraPolicies = {
+          SecurityDevices = {
+            "OpenSC PKCS11" = "${pkgs.opensc}/lib/opensc-pkcs11.so";  # Para poder utilizar el DNIe, y otras tarjetas inteligentes
+            "DNIeRemote" = "${config.programs.dnieremote.finalPackage}/lib/libdnieremotepkcs11.so";  # Para poder utilizar el DNIe por NFC desde un móvil Android
+          };
+        };
+      });
+      profiles.lae = {
+        id = 0;  # Hace que este perfil sea el perfil por defecto
+        # ... El resto de opciones de configuración de este perfil
+      };
+    };
+
     home.stateVersion = "22.11";
   };
 
@@ -240,37 +273,39 @@
       enable = true;
       user = "lae";
       group = "users";
-      configDir = "/home/lae/syncthing/.config";
+      dataDir = "/home/lae";
       openDefaultPorts = true;
       overrideFolders = true;
       overrideDevices = true;
-      devices = {
-        rbpstor02 = {
-          id = rbpstor02-id;
-          addresses = [
-            "tcp://10.4.1.206:22000"
-          ];
+      settings = {
+        devices = {
+          rbpstor02 = {
+            id = rbpstor02-id;
+            addresses = [
+              "tcp://10.4.1.206:22000"
+            ];
+          };
+        };
+        folders = {
+          Books = {
+            path = "/home/lae/Books";
+            id = folder-books-id;
+            devices = [ "rbpstor02" ];
+          };
+          Notebooks = {
+            path = "/home/lae/Documents/Notebooks";
+            id = folder-notebooks-id;
+            devices = [ "rbpstor02" ];
+          };
+        };
+        extraOptions = {
+          gui = {
+            theme = "black";
+            insecureAdminAccess = false;
+          };
         };
       };
-      folders = {
-        Books = {
-          path = "/home/lae/Books";
-          id = folder-books-id;
-          devices = [ "rbpstor02" ];
-        };
-        Notebooks = {
-          path = "/home/lae/Documents/Notebooks";
-          id = folder-notebooks-id;
-          devices = [ "rbpstor02" ];
-        };
-      };
-      extraOptions = {
-        gui = {
-          theme = "black";
-          insecureAdminAccess = false;
-        };
-      };
-  };
+    };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
