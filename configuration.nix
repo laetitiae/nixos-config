@@ -114,6 +114,7 @@
     description = "Leticia";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
+    ignoreShellProgramCheck = true;
     packages = with pkgs; [
       firefox
       google-chrome
@@ -137,7 +138,7 @@
       zsh
       yubico-piv-tool
       yubikey-manager
-      yubioath-desktop
+      yubioath-flutter
       yubikey-manager-qt 
       gopass-jsonapi
       xclip
