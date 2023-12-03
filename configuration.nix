@@ -268,6 +268,8 @@
   environment.systemPackages = with pkgs; [
    python3
    pipenv
+   pdftk
+   ffmpeg
    wget
    ((vim_configurable.override {  }).customize{
       name = "vim";
