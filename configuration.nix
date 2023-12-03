@@ -8,7 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      <home-manager/nixos>
+      #<home-manager/nixos>
     ];
 
   # Bootloader.
@@ -42,6 +42,11 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Madrid";
