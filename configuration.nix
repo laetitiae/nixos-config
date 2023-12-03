@@ -114,7 +114,6 @@
     description = "Leticia";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
-    ignoreShellProgramCheck = true;
     packages = with pkgs; [
       firefox
       google-chrome
@@ -133,6 +132,8 @@
     ];
   };
 
+  programs.zsh.enable = true;
+
   home-manager.users.lae = { pkgs, ... }: {
     home.packages = with pkgs; [ 
       zsh
@@ -143,6 +144,11 @@
       gopass-jsonapi
       xclip
       vlc
+    ];
+    nixpkgs.overlays = [
+      (self: super: {
+        fcitx-engines = pkgs.fcitx5;
+      })
     ];
 
     # git configuration
@@ -263,6 +269,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-24.8.6"
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
