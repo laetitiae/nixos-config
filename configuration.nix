@@ -149,6 +149,7 @@
       gopass-jsonapi
       xclip
       vlc
+      kazam
     ];
     nixpkgs.overlays = [
       (self: super: {
@@ -306,7 +307,7 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
-    "electron-24.8.6"
+    "electron-25.9.0"
   ];
 
   # List packages installed in system profile. To search, run:

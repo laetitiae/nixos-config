@@ -10,7 +10,7 @@
     };
 
     autofirma-nix = {
-      url = "github:nilp0inter/autofirma-nix";
+      url = "github:nilp0inter/autofirma-nix/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
